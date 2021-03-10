@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
@@ -6,6 +6,7 @@ import os
 UPLOAD_FOLDER = os.path.abspath('static')
 
 app = Flask(__name__)
+app.secret_key = "gaighaoehghwah"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///finances.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -41,8 +42,21 @@ def home():
         db.session.commit()
         return redirect(url_for('home'))
     else:
+        all_spendings = 0
         exp = Expenses.query.all()
-        return render_template('wydatki.html', expenses=exp, path=os.path.join('images',""))
+        for p in exp:
+            all_spendings+=p.price
+        return render_template('wydatki.html',all_spendings=all_spendings,expen = Expenses, expenses=exp, path=os.path.join('images',""))
+
+@app.route('/deleteRecord', methods=["POST", "GET"])
+def deleteRecord():
+    if request.method == 'POST':
+        id_to_delete = request.form['id']
+        delete = Expenses.query.filter_by(_id=id_to_delete).first()
+        print(id_to_delete)
+        db.session.delete(delete)
+        db.session.commit()
+    return redirect(url_for("home"))
 
 if __name__ == '__main__':
     db.create_all()

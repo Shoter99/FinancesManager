@@ -20,7 +20,7 @@
 		</form>
 		</br></br>
 		<table>
-			<tr>
+			<tr id="tr">
 				<th>Nazwa</th>
 				<th>Cena</th>
 				<th>Zdjęcie</th>
@@ -28,9 +28,17 @@
 			{% for exp in expenses %}
 			<tr>
 				<th>{{exp.name}}</th>
-				<th>{{exp.price}}</th>
+				<th>{{exp.price|string()+" zł"}}</th>
 				<th><a href={{url_for('static',filename=path+exp.path_to_img)}}><img src={{url_for('static',filename=path+exp.path_to_img)}}></a></th>
+			</tr><br>
+			<tr>
+				<th></th><th><form method=post action="/deleteRecord">
+				<input type='hidden' value={{exp._id}} name="id">
+				<input type='submit' value='Usuń'>
+					</form></th>
 			</tr>
 			{% endfor%}
 		</table>
+		<div style="font-size: 28px; padding: 30px;"  >Suma wydatków: {{all_spendings}} zł</div>
+	</main>
 {%endblock%}
