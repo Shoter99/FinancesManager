@@ -1,5 +1,36 @@
 {%extends "base.html"%}
 {%block title%}Wydatki{%endblock%}
 {%block content%}
-	<center><h1>Wydatki</h1></center>
+	<div id='title'>Wydatki</div>
+	<main>
+		<form method="POST" action=# enctype=multipart/form-data>
+			<table>
+				<tr>
+					<th>Nazwa</th>
+					<th>Cena</th>
+					<th style="width:50px;">Zdjęcie</th>
+				</tr>
+				<tr>
+					<th><input type="text" name="name" required='true'></th>
+					<th><input step="0.01" type='number' name='price' required='true'></th>
+					<th style="width:50px;"><input  type='file' name='img'></th>
+				</tr>
+			</table></br>
+			<input type='submit'>
+		</form>
+		</br></br>
+		<table>
+			<tr>
+				<th>Nazwa</th>
+				<th>Cena</th>
+				<th>Zdjęcie</th>
+			</tr>
+			{% for exp in expenses %}
+			<tr>
+				<th>{{exp.name}}</th>
+				<th>{{exp.price}}</th>
+				<th><a href={{url_for('static',filename=path+exp.path_to_img)}}><img src={{url_for('static',filename=path+exp.path_to_img)}}></a></th>
+			</tr>
+			{% endfor%}
+		</table>
 {%endblock%}

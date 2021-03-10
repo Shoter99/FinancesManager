@@ -7,7 +7,25 @@
 		body{
 		background-image:  url('{{url_for("static",filename="bg.png")}}');
 		}
+		#title{
+			font-size:48px;
+			margin: 20px;
+			text-align:center;
+		}
+		main{
+			text-align:center;
+		}
+		table{
+			width: 900px;
+			text-align:center;
+			margin-left:auto;
+			margin-right:auto;
+		}
+		img{
+			width:80px;
+			height:50px;
 	</style>
+	<link href={{url_for('static', filename='style.css')}}>
 	</head>
 	<body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
