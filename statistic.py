@@ -1,6 +1,10 @@
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy
 
-f = numpy.genfromtxt("date.txt", delimiter=',')
-print(f)
+data = numpy.genfromtxt("data.txt", delimiter=',')
+date = numpy.genfromtxt("date.txt", delimiter=',', dtype="|S5")
+print(data)
+print(date)
+plt.plot(date,data)
+plt.show()
 

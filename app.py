@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
-import os
+import os, datetime
 
 UPLOAD_FOLDER = os.path.abspath('static')
 
@@ -12,9 +12,18 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 
+def saveDate():
+    try:
+        f= open('date.txt', 'a')
+    except:
+        print('Could not open a file')
+        quit()
+    dateNow = datetime.datetime.now()
+    f.write(dateNow.strftime("%m.%d,"))
+
 def saveToFile(exp):
     try:
-        f= open('date.txt', 'w')
+        f= open('data.txt', 'a')
     except:
         print('nie udało się otworzyć pliku')
         quit()
@@ -35,7 +44,7 @@ class Expenses(db.Model):
         self.price = price
         self.path_to_img = path_to_img
 
-
+@app.route('/wydatki', methods=['POST','GET'])
 @app.route('/', methods=['POST', 'GET'])
 def home():
     if request.method == 'POST':
@@ -52,14 +61,14 @@ def home():
         db.session.commit()
         exp = Expenses.query.all()
         saveToFile(exp)
+        saveDate()
         return redirect(url_for('home'))
     else:
         all_spendings = 0
         exp = Expenses.query.all()
         for p in exp:
             all_spendings+=p.price
-        
-        return render_template('wydatki.html',all_spendings=all_spendings,expen = Expenses, expenses=exp, path=os.path.join('images',""))
+        return render_template('wydatki.html',all_spendings=round(all_spendings,2),expen = Expenses, expenses=exp, path=os.path.join('images',""))
 
 @app.route('/deleteRecord', methods=["POST", "GET"])
 def deleteRecord():
@@ -70,7 +79,9 @@ def deleteRecord():
         db.session.delete(delete)
         db.session.commit()
     return redirect(url_for("home"))
-
+@app.route('/<page>')
+def dif(page):
+    return '<center><h1>'+page+' is not working!</h1></center>'
 if __name__ == '__main__':
     db.create_all()
     app.run(debug=True)
