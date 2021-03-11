@@ -12,7 +12,17 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 
-
+def saveToFile(exp):
+    try:
+        f= open('date.txt', 'w')
+    except:
+        print('nie udało się otworzyć pliku')
+        quit()
+    sum = 0
+    for i in exp:
+        sum+=i.price
+    f.write(str(sum)+',')
+    f.close()
 
 class Expenses(db.Model):
     _id = db.Column('id', db.Integer, primary_key=True)
@@ -40,12 +50,15 @@ def home():
         expenses = Expenses(name,price, img.filename)
         db.session.add(expenses)
         db.session.commit()
+        exp = Expenses.query.all()
+        saveToFile(exp)
         return redirect(url_for('home'))
     else:
         all_spendings = 0
         exp = Expenses.query.all()
         for p in exp:
             all_spendings+=p.price
+        
         return render_template('wydatki.html',all_spendings=all_spendings,expen = Expenses, expenses=exp, path=os.path.join('images',""))
 
 @app.route('/deleteRecord', methods=["POST", "GET"])
