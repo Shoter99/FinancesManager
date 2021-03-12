@@ -1,19 +1,24 @@
 {%extends "base.html"%}
 {%block title%}Wydatki{%endblock%}
 {%block content%}
-	<div id='title'>Wydatki</div>
+	<div id='title'>Finanse</div>
 	<main>
 		<form method="POST" action=# enctype=multipart/form-data>
 			<table>
 				<tr>
 					<th>Nazwa</th>
-					<th>Cena</th>
-					<th style="width:50px;">Zdjęcie</th>
+					<th style="margin-right:0; padding:0; width: 0px;"></th>
+					<th style="margin-left: 0; width: 182px; padding-left: 65px; text-align: left;  margin-right: 20px;">Cena</th>
+					<th style="width:50px; padding-right: 65px;">Zdjęcie</th>
 				</tr>
 				<tr>
-					<th><input type="text" name="name" required='true'></th>
-					<th><input step="0.01" type='number' name='price' required='true'></th>
-					<th style="width:50px;"><input  type='file' name='img'></th>
+					<th><input type="text" name="name" required="true"></th>
+					<th style="margin-right:0; padding-right:0; width: 38px;"><select name="value" >
+						<option value="+">+</option>
+						<option value="-">-</option>
+						</select></th>
+					<th style="margin-left: 0; width: 182px; padding: 0;  margin-right: 20px;"><input step="0.01" type='number' name='price' required='true'></th>
+					<th style="width:50px; margin-right: 20px;"><input  type='file' name='img'></th>
 				</tr>
 			</table></br>
 			<input type='submit'>
@@ -28,9 +33,9 @@
 			{% for exp in expenses %}
 			<tr>
 				<th>{{exp.name}}</th>
-				<th>{{exp.price|string()+" zł"}}</th>
+				<th>{{exp.char+exp.price|string()+" zł"}}</th>
 				<th><a href={{url_for('static',filename=path+exp.path_to_img)}}><img src={{url_for('static',filename=path+exp.path_to_img)}}></a></th>
-			</tr><br>
+			</tr></br>
 			<tr>
 				<th></th><th><form method=post action="/deleteRecord">
 				<input type='hidden' value={{exp._id}} name="id">
