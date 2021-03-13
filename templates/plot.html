@@ -1,0 +1,12 @@
+{%extends "base.html"%}
+{% block title%}Statystyki{%endblock%}
+{%block content%}
+{% set rand =  range(1, 64127316) | random %}
+<center>
+	<h1><a href="home"></a></h1>
+	<span id="img"></span>
+	<script>
+		t= performance.now()
+		document.getElementById("img").innerHTML = '<img src="/static/plot.png?'+t+'" style="width: 800px; height: 600px;">'
+	</script>
+{%endblock%}
