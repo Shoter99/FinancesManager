@@ -55,7 +55,8 @@
 					<th>{{exp.char+exp.price|string()+" zł"}}</th>
 					<th>
 						{%if exp.path_to_img != ""%}
-						<a href={{url_for('static',filename=path+exp.path_to_img)}}><img src={{url_for('static',filename=path+exp.path_to_img)}}></a></th>
+							<a href={{url_for('static',filename=path+exp.path_to_img)}}><img 
+							src={{url_for('static',filename=path+exp.path_to_img)}}></a></th>
 						{%else%}
 						<div style="width: width:260px;	height:150px;"></div>
 						{%endif%}

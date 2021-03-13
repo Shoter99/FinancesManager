@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
-import os, datetime
+import os, datetime, json
 from statistic import plot
 #defining a folder for images
 UPLOAD_FOLDER = os.path.abspath('static')
@@ -15,14 +15,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 #creating a function that saves current date to a file
-def saveDate():
+def saveDate(id, category):
     try:
-        f= open('date.txt', 'a')
-    except:
+        with open(category+".json", 'a') as f:
+            dateNow = datetime.datetime.now().strftime("%m.%d")
+            date = {id:dateNow}
+            json.dump(date, f)
+    except Exception:
         print('Could not open a file')
         quit()
-    dateNow = datetime.datetime.now()
-    f.write(dateNow.strftime("%m.%d,"))
 #creating a function that calcuates all spendings and expenses
 def calculateSum(exp):
     sum = 0
@@ -33,14 +34,12 @@ def calculateSum(exp):
             sum-=i.price
     return sum
 #saving the calculations from previous function to a file
-def saveToFile(exp):
+def saveToFile(exp, id, category):
     try:
-        f= open('data.txt', 'a')
-    except:
+        with open(category+".json", 'a') as f:
+            json.dump({id:calculateSum(exp)}, f)
+    except Exception:
         print('nie udało się otworzyć pliku')
-        quit()
-    f.write(str(calculateSum(exp))+',')
-    f.close()
 #creating category class 
 #that stores name of the category and is in one to many relationship 
 class Category(db.Model):
@@ -89,8 +88,11 @@ def home():
         db.session.add(expenses)
         db.session.commit()
         exp = Expenses.query.all()
-        saveToFile(exp)
-        saveDate()
+        name = find_category.category_name
+        Cid = find_category._id
+        idofExpenses = Expenses.query.filter_by(category_id=Cid).first()
+        saveToFile(exp, idofExpenses._id, name)
+        saveDate(Cid, name)
         return redirect(url_for('home'))
     else:
         all_spendings = 0
