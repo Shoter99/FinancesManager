@@ -1,18 +1,19 @@
 import matplotlib.pyplot as plt
-import numpy
+import numpy, os
 from flask import Blueprint, Flask, url_for, redirect, render_template
-import os, time, json, glob
-plot = Blueprint('plot', __name__, static_folder="static", template_folder="templates")
+
+plot = Blueprint('plot', __name__)
 
 @plot.route("/podsumowanie")
 def podsumowanie():
-	data = list()
-	for f in  glob.glob("*.json"):
-		x = json.load(f)
-		data.append([x])
-	return f'<h1>{data}</h1>'
-#    plt.plot(date,data, color="pink", linewidth=3)
- #   plt.savefig(os.path.join('static', 'plot.png'))
-  #  t = time.time()
-   # return render_template("plot.html", t=t)
+    try:
+        data = numpy.genfromtxt("data.txt", delimiter=',')
+        date = numpy.genfromtxt("date.txt", delimiter=',', dtype="|S5")
+    except Exception as e:
+        print(e)
+        data = 0
+        date = ''
+    plt.plot(date,data, color='pink', linewidth=3.0)
+    plt.savefig(os.path.join('static', 'plot.png'))
+    return render_template('plot.html')
 
